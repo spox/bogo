@@ -4,6 +4,38 @@ module Bogo
   # Memoization helpers
   module Memoization
 
+    class << self
+
+      # Clean up isolated memoizations
+      #
+      # @param object_id [Object]
+      # @return [Proc]
+      def cleanup(object_id)
+        proc do
+          Thread.current[:bogo_memoization].delete_if do |k,v|
+            k.to_s.start_with?(object_id.to_s)
+          end
+        end
+      end
+
+      # Clear thread memoizations
+      #
+      # @return [nil]
+      def clear_current!
+        Thread.current[:bogo_memoization] = nil
+      end
+
+      # Clear global memoizations
+      #
+      # @return [nil]
+      def clear_global!
+        Thread.exclusive do
+          $bogo_memoization = Smash.new
+        end
+      end
+
+    end
+
     # Memoize data
     #
     # @param key [String, Symbol] identifier for data
@@ -15,14 +47,29 @@ module Bogo
       unless(direct)
         key = "#{self.object_id}_#{key}"
       end
-      unless(_memo.has_key?(key))
-        _memo[key] = yield
+      if(direct == :global)
+        Thread.exclusive do
+          $bogo_memoization ||= Smash.new
+          unless($bogo_memoization.has_key?(key))
+            $bogo_memoization[key] = yield
+          end
+          $bogo_memoization[key]
+        end
+      else
+        unless(_memo.has_key?(key))
+          _memo[key] = yield
+        end
+        _memo[key]
       end
-      _memo[key]
     end
 
+    # @return [Smash] memoization hash for current thread
     def _memo
-      Thread.current[:bogo_memoization] ||= Smash.new
+      unless(Thread.current[:bogo_memoization])
+        Thread.current[:bogo_memoization] = Smash.new
+        ObjectSpace.define_finalizer(self, Bogo::Memoization.cleanup(self.object_id))
+      end
+      Thread.current[:bogo_memoization]
     end
 
     # Remove memoized value
@@ -34,7 +81,14 @@ module Bogo
       unless(direct)
         key = "#{self.object_id}_#{key}"
       end
-      _memo.delete(key)
+      if(direct == :global)
+        Thread.exclusive do
+          $bogo_memoization ||= Smash.new
+          $bogo_memoization.delete(key)
+        end
+      else
+        _memo.delete(key)
+      end
     end
 
     # Remove all memoized values
