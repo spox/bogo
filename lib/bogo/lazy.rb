@@ -1,4 +1,5 @@
 require 'bogo'
+require 'multi_json'
 require 'digest/sha2'
 
 module Bogo
@@ -12,6 +13,11 @@ module Bogo
       def data
         unless(@data)
           @data = Smash.new
+          self.class.attributes.each do |key, value|
+            if(value.has_key?('default'))
+              @data[key] = value['default']
+            end
+          end
         end
         @data
       end
