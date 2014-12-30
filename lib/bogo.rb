@@ -7,4 +7,5 @@ module Bogo
   autoload :Smash, 'bogo/smash'
 end
 
-autoload :Smash, 'bogo/smash'
+# Always load smash
+require 'bogo/smash'
