@@ -72,4 +72,10 @@ describe Bogo::Smash do
     instance.to_smash(:sorted).keys.must_equal %w(a w x z)
   end
 
+  it 'should provide consistent content checksums' do
+    s1 = Smash.new(:a => 1, :z => 2, :d => 3, :b => {:w => 1, :a => 3})
+    s2 = Smash.new(:b => {:a => 3, :w => 1}, :d => 3, :z => 2, :a => 1)
+    s1.checksum.must_equal s2.checksum
+  end
+
 end
