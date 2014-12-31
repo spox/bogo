@@ -150,6 +150,7 @@ puts obj2.object_value('fubar')
 puts obj2.thread_value('fubar')
 puts obj2.global_value('fubar')
 puts '--- obj2 end'
+```
 
 ## Lazy
 
