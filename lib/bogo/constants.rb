@@ -24,6 +24,20 @@ module Bogo
       self.class.const_get(name)
     end
 
+    # Provides namespace constant
+    #
+    # @param inst [Object]
+    # @return [Class, Module]
+    def namespace(inst = self)
+      klass = inst.class.name.split('::')
+      klass.pop
+      if(klass.empty?)
+        ObjectSpace
+      else
+        constantize(klass.join('::'))
+      end
+    end
+
   end
 
 end

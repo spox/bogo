@@ -13,6 +13,13 @@ class BogoConstSub < BogoConstTop
   FUBAR = 'bai'
 end
 
+module BogoNamespace
+  module Fubar
+    class Foobar
+    end
+  end
+end
+
 describe Bogo::Constants do
 
   describe 'Fetching constant value' do
@@ -52,6 +59,23 @@ describe Bogo::Constants do
 
     it 'should return nil when constant not found' do
       @const.constantize('Bogo::Fubar').must_be_nil
+    end
+
+  end
+
+  describe 'Providing namespace for class' do
+
+    before do
+      @const = Object.new
+      @const.extend Bogo::Constants
+    end
+
+    it 'should return ObjectSpace when class is top level' do
+      @const.namespace(String).must_equal ObjectSpace
+    end
+
+    it 'should return parent namespace' do
+      @const.namespace(BogoNamespace::Fubar::Foobar.new).must_equal BogoNamespace::Fubar
     end
 
   end
