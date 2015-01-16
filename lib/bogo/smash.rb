@@ -112,7 +112,7 @@ class Hash
   # @param convert_call [Symbol] builtin hash convert
   # @return [Smash]
   def to_type_converter(type, convert_call, *args)
-    type.new.tap do |smash|
+    result = type.new.tap do |smash|
       if(args.include?(:sorted))
         process = self.sort_by do |entry|
           entry.first.to_s
@@ -123,6 +123,12 @@ class Hash
       process.each do |k,v|
         smash[k.is_a?(Symbol) ? k.to_s : k] = smash_conversion(v, convert_call, *args)
       end
+    end
+    if(args.include?(:freeze))
+      result.values.map(&:freeze)
+      result.freeze
+    else
+      result
     end
   end
 
@@ -137,10 +143,28 @@ class Hash
       obj.send(convert_call, *args)
     when Array
       obj.map do |i|
-        smash_conversion(i, convert_call, *args)
+        result = smash_conversion(i, convert_call, *args)
+        args.include?(:freeze) ? result.freeze : result
       end
     else
-      obj
+      args.include?(:freeze) ? obj.freeze : obj
+    end
+  end
+
+end
+
+class Array
+
+  # Iterates searching for Hash types to auto convert
+  #
+  # @return [Array]
+  def to_smash(*args)
+    self.map do |item|
+      if(item.respond_to?(:to_smash))
+        item.to_smash(*args)
+      else
+        args.include?(:freeze) ? item.freeze : item
+      end
     end
   end
 

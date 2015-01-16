@@ -78,4 +78,30 @@ describe Bogo::Smash do
     s1.checksum.must_equal s2.checksum
   end
 
+  it 'should convert Hashes in an Array to Smashes' do
+    result = [
+      {:a => true},
+      [3, {:b => false}]
+    ].to_smash
+    result.first.must_be_kind_of Smash
+    result.last.last.must_be_kind_of Smash
+  end
+
+  it 'should freeze entire Smash' do
+    result = {
+      :a => 'fubar',
+      :b => {
+        :c => [
+          {:d => 'hi'},
+          'testing'
+        ],
+      }
+    }.to_smash(:freeze)
+    result.must_be :frozen?
+    result[:b][:c].must_be :frozen?
+    result[:b][:c].first.must_be :frozen?
+    result.get[:b][:c].last.must_be :frozen?
+    result.get[:b][:c].first[:d].must_be :frozen?
+  end
+
 end
