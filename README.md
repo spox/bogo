@@ -109,6 +109,50 @@ puts Smash.new(:a => 1, :b => 2, :c => 3).checksum
 puts Smash.new(:c => 3, :b => 2, :a => 1).checksum
 ```
 
+### Freezing
+
+Freeze entire smash structure:
+
+```ruby
+require 'bogo'
+
+inst = {:a => 'hi', :b => {:c => 'bye'}}.to_smash(:freeze)
+puts inst[:a].frozen? 'Frozen' : 'Thawed'
+puts inst[:b].frozen? 'Frozen' : 'Thawed'
+puts inst[:b][:c].frozen? 'Frozen' : 'Thawed'
+```
+
+### Arrays
+
+The `#to_smash` helper is also attached to `Array` to
+fully convert an Arrays internals to Smashes
+
+```ruby
+require 'bogo'
+
+puts [{:a => 1}].to_smash.first.class.name
+```
+
+## Constants
+
+Turn a string into a constant:
+
+```ruby
+require 'bogo'
+
+const = Object.new.extend(Bogo::Constants)
+p const.constantize('Bogo::Constants')
+```
+
+Get the namespace of a constant:
+
+```ruby
+require 'bogo'
+
+const = Object.new.extend(Bogo::Constants)
+p const.namespace('Bogo::Constants')
+```
+
 ## Memoization
 
 Memoization helpers for thread and object local, thread local,
