@@ -104,4 +104,26 @@ describe Bogo::Smash do
     result.get[:b][:c].first[:d].must_be :frozen?
   end
 
+  it 'should camel case keys within Smash' do
+    result = {
+      :fubar => 1,
+      :bing_bang => {
+        :multi_word => 1
+      }
+    }.to_smash(:camel)
+    result.keys.must_equal ['Fubar', 'BingBang']
+    result['BingBang'].keys.must_equal ['MultiWord']
+  end
+
+  it 'should snake case keys within Smash' do
+    result = {
+      'Fubar' => 1,
+      'BingBang' => {
+        'MultiWord' => 1
+      }
+    }.to_smash(:snake)
+    result.keys.must_equal ['fubar', 'bing_bang']
+    result[:bing_bang].keys.must_equal ['multi_word']
+  end
+
 end
