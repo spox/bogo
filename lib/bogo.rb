@@ -6,6 +6,7 @@ module Bogo
   autoload :Lazy, 'bogo/lazy'
   autoload :Memoization, 'bogo/memoization'
   autoload :Smash, 'bogo/smash'
+  autoload :Utility, 'bogo/utility'
 end
 
 # Always load smash
