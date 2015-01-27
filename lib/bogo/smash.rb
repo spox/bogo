@@ -121,6 +121,11 @@ class Hash
         process = self
       end
       process.each do |k,v|
+        if(args.include?(:snake))
+          k = Bogo::Utility.snake(k.to_s)
+        elsif(args.include?(:camel))
+          k = Bogo::Utility.camel(k.to_s)
+        end
         smash[k.is_a?(Symbol) ? k.to_s : k] = smash_conversion(v, convert_call, *args)
       end
     end
