@@ -76,7 +76,7 @@ module Bogo
     #
     # @param key [String, Symbol] identifier for data
     # @param direct [Truthy, Falsey] direct skips key prepend of object id
-    # @return [NilClass]
+    # @return [Object] removed instance
     def unmemoize(key, direct=false)
       unless(direct)
         key = "#{self.object_id}_#{key}"
