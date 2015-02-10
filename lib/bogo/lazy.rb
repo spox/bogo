@@ -227,11 +227,7 @@ module Bogo
           class << self
 
             def inherited(klass)
-              klass.set_attributes(
-                MultiJson.load(
-                  MultiJson.dump(self.attributes)
-                ).to_smash
-              )
+              klass.set_attributes(self.attributes.to_smash)
             end
 
           end
