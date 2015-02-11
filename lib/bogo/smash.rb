@@ -32,6 +32,11 @@ module Bogo
       super(hash)
     end
 
+    def merge(hash)
+      hash = hash.to_smash
+      super(hash)
+    end
+
     # Get value at given path
     #
     # @param args [String, Symbol] key path to walk
