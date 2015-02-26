@@ -103,6 +103,15 @@ module Bogo
     # Class methods for laziness
     module ClassMethods
 
+      # Disable dirty state
+      def always_clean!
+        self.class_eval do
+          def dirty?; false; end
+          def valid_state; self; end
+          alias_method :dirty, :data
+        end
+      end
+
       # Add new attributes to class
       #
       # @param name [String]
