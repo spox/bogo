@@ -5,6 +5,7 @@ module Bogo
   autoload :Constants, 'bogo/constants'
   autoload :Lazy, 'bogo/lazy'
   autoload :Memoization, 'bogo/memoization'
+  autoload :PriorityQueue, 'bogo/priority_queue'
   autoload :Smash, 'bogo/smash'
   autoload :Utility, 'bogo/utility'
 end
