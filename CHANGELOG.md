@@ -1,3 +1,7 @@
+## v0.1.10
+* Add `Lazy#always_clean!` to remove attribute state
+* Add `PriorityQueue`
+
 ## v0.1.8
 * Use `#to_smash` to for duping to preserve types
 * Force type on merges
