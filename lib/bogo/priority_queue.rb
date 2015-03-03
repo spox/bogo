@@ -36,6 +36,28 @@ module Bogo
       self
     end
 
+    # Push multiple items onto the queue at once
+    #
+    # @param items [Array<Array<item, cost>>]
+    # @return [self]
+    def multi_push(items)
+      lock.synchronize do
+        items.each do |item_pair|
+          item, cost = item_pair
+          if(queue[item])
+            raise ArgumentError.new "Item already exists in queue. Items must be unique! (#{item})"
+          end
+          unless(cost.is_a?(Numeric) || cost.is_a?(Proc))
+            raise ArgumentError.new "Cost must be provided as parameter or proc! (item: #{item})"
+          end
+          @block_costs += 1 if cost.is_a?(Proc)
+          queue[item] = cost
+        end
+        sort!
+      end
+      self
+    end
+
     # @return [Object, NilClass] item or nil if empty
     def pop
       lock.synchronize do

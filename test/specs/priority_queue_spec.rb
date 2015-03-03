@@ -56,5 +56,55 @@ describe Bogo::PriorityQueue do
       q.empty?.must_equal true
     end
 
+    it 'should allow pushing muliple items at once' do
+      q.multi_push([
+          ['a', 1],
+          ['b', 2],
+          ['d', 4],
+          ['c', 3],
+          ['e', 5]
+        ])
+      %w(a b c d e).each do |chr|
+        q.pop.must_equal chr
+      end
+    end
+
+    it 'should allow pushing multiple items with block scores' do
+      q.multi_push([
+          ['a', 1],
+          ['b', lambda{2}],
+          ['d', 4],
+          ['c', lambda{3}],
+          ['e', 5]
+        ])
+      %w(a b c d e).each do |chr|
+        q.pop.must_equal chr
+      end
+    end
+
+    it 'should error when pushing multiple items with no score' do
+      lambda do
+        q.multi_push([
+          ['a', 1],
+          ['b'],
+          ['d', 4],
+          ['c', lambda{3}],
+          ['e', 5]
+        ])
+      end.must_raise ArgumentError
+    end
+
+    it 'should error when pushing non numeric/proc as score' do
+      lambda do
+        q.multi_push([
+            ['a', 1],
+            ['b', 'x'],
+            ['d', 4],
+            ['c', lambda{3}],
+            ['e', 5]
+          ])
+      end.must_raise ArgumentError
+    end
+
   end
 end
