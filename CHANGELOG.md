@@ -1,3 +1,6 @@
+## v0.1.12
+* Support multiple item push on `PriorityQueue`
+
 ## v0.1.10
 * Add `Lazy#always_clean!` to remove attribute state
 * Add `PriorityQueue`

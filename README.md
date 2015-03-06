@@ -254,5 +254,46 @@ p data.dirty?
 p data.data
 ```
 
-## Info
+## PriorityQueue
+
+Queue items based on a given score. Score can be provided as a
+numerical value, or as the result of a block. By default, the
+item with the lowest score has the highest priority.
+
+
+```ruby
+require 'bogo'
+
+q = Bogo::PriorityQueue.new
+q.push('a', 3)
+q.push('b', 1)
+puts q.pop
+```
+
+This will print "b" as it has the lowest score (highest priority). If
+a high score is prefered to designate highest priority, that can  be
+set when initializing the instance of the queue:
+
+```ruby
+require 'bogo'
+
+q = Bogo::PriorityQueue.new(:highscore)
+```
+
+Scores can also be provided as blocks which will be evaluated prior
+to `#pop`:
+
+```ruby
+require 'bogo'
+
+q = Bogo::PriorityQueue.new(:highscore)
+q.push('a'){ Time.now.to_i }
+q.push('b', Time.now.to_i)
+sleep(1)
+puts q.pop
+```
+
+This will print "a" as its score will be higher when popped.
+
+# Info
 * Repository: https://github.com/spox/bogo
