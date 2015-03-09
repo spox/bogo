@@ -31,8 +31,8 @@ module Bogo
         end
         @block_costs += 1 if cost.nil?
         queue[item] = cost || block
-        sort!
       end
+      sort!
       self
     end
 
@@ -53,15 +53,15 @@ module Bogo
           @block_costs += 1 if cost.is_a?(Proc)
           queue[item] = cost
         end
-        sort!
       end
+      sort!
       self
     end
 
     # @return [Object, NilClass] item or nil if empty
     def pop
+      sort! if @block_costs > 0
       lock.synchronize do
-        sort! if @block_costs > 0
         item, score = queue.first
         @block_costs -= 1 if score.respond_to?(:call)
         queue.delete(item)
@@ -76,21 +76,31 @@ module Bogo
       end
     end
 
+    # @return [TrueClass, FalseClass]
     def empty?
       size == 0
     end
 
+    # @return [TrueClass, FalseClass]
+    def include?(object)
+      lock.synchronize do
+        queue.keys.include?(object)
+      end
+    end
+
     # Sort the queue based on cost
     def sort!
-      queue.replace(
-        Hash[
-          queue.sort do |x,y|
-            x,y = y,x if @reverse_score
-            (x.last.respond_to?(:call) ? x.last.call : x.last).to_f <=>
-              (y.last.respond_to?(:call) ? y.last.call : y.last).to_f
-          end
-        ]
-      )
+      lock.synchronize do
+        queue.replace(
+          Hash[
+            queue.sort do |x,y|
+              x,y = y,x if @reverse_score
+              (x.last.respond_to?(:call) ? x.last.call : x.last).to_f <=>
+                (y.last.respond_to?(:call) ? y.last.call : y.last).to_f
+            end
+          ]
+        )
+      end
     end
 
     protected

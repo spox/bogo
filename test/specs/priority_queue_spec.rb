@@ -106,5 +106,11 @@ describe Bogo::PriorityQueue do
       end.must_raise ArgumentError
     end
 
+    it 'should allow checking if item is already pushed' do
+      q.push(1, 1)
+      q.include?(1).must_equal true
+      q.include?(2).must_equal false
+    end
+
   end
 end
