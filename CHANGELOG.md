@@ -1,3 +1,8 @@
+## v0.1.14
+* [PriorityQueue] Add PriorityQueue#include? helper method
+* [PriorityQueue] Wrap sorting with synchronization
+* [Constants] Remove pre-check for constant (force load)
+
 ## v0.1.12
 * Support multiple item push on `PriorityQueue`
 
