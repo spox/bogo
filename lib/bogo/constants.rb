@@ -11,8 +11,11 @@ module Bogo
     # @return [Object]
     def constantize(string)
       string.split('::').inject(ObjectSpace) do |memo, key|
-        break unless memo.const_defined?(key)
-        memo.const_get(key)
+        begin
+          memo.const_get(key)
+        rescue NameError
+          break
+        end
       end
     end
 
