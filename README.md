@@ -295,5 +295,20 @@ puts q.pop
 
 This will print "a" as its score will be higher when popped.
 
+## EphemeralFile
+
+This is just like a Tempfile (this is just a subclass) except that
+it will delete itself when closed.
+
+```ruby
+require 'bogo'
+
+e_file = Bogo::EphemeralFile.new('bogo')
+path = e_file.path
+puts "File exists: #{File.exists?(path)}"
+e_file.close
+puts "File exists: #{File.exists?(path)}"
+```
+
 # Info
 * Repository: https://github.com/spox/bogo
