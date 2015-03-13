@@ -1,7 +1,7 @@
 require 'bogo'
 require 'tempfile'
 
-class Bogo
+module Bogo
   # Tempfile that will destroy itself when closed
   class EphemeralFile < Tempfile
 

@@ -6,7 +6,7 @@ describe Bogo::EphemeralFile do
     file = Bogo::EphemeralFile.new('bogo')
     path = file.path
     File.exists?(path).must_equal true
-    path.close
+    file.close
     File.exists?(path).must_equal false
   end
 
