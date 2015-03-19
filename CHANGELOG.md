@@ -1,3 +1,6 @@
+## v0.1.16
+* [EphemeralFile] Add new EphemeralFile class
+
 ## v0.1.14
 * [PriorityQueue] Add PriorityQueue#include? helper method
 * [PriorityQueue] Wrap sorting with synchronization
