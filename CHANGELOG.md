@@ -1,3 +1,6 @@
+## v0.1.18
+* [PriorityQueue] Fix highscore sorting
+
 ## v0.1.16
 * [EphemeralFile] Add new EphemeralFile class
 
