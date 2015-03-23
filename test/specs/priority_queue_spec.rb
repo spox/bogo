@@ -112,5 +112,15 @@ describe Bogo::PriorityQueue do
       q.include?(2).must_equal false
     end
 
+    it 'should order queue by high score if provided :highscore on init' do
+      high_q = Bogo::PriorityQueue.new(:highscore)
+      high_q.push('a', 1)
+      high_q.push('b', 5)
+      high_q.push('c', 2)
+      high_q.pop.must_equal 'b'
+      high_q.pop.must_equal 'c'
+      high_q.pop.must_equal 'a'
+    end
+
   end
 end
