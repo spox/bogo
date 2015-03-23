@@ -94,7 +94,7 @@ module Bogo
         queue.replace(
           Hash[
             queue.sort do |x,y|
-              x,y = y,x if @reverse_score
+              x,y = y,x if @reverse_sort
               (x.last.respond_to?(:call) ? x.last.call : x.last).to_f <=>
                 (y.last.respond_to?(:call) ? y.last.call : y.last).to_f
             end
