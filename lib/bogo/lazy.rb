@@ -133,7 +133,13 @@ module Bogo
         define_method(name) do
           send(depends_on) if depends_on
           self.class.on_missing(self) unless data.has_key?(name) || dirty.has_key?(name)
-          dirty[name] || data[name]
+          if(dirty.has_key?(name))
+            dirty[name]
+          elsif(data.has_key?(name))
+            data[name]
+          else
+            self.class.attributes[name][:default]
+          end
         end
         define_method("#{name}=") do |val|
           values = multiple_values && val.is_a?(Array) ? val : [val]
