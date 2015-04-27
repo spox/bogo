@@ -1,3 +1,7 @@
+## v0.1.20
+* Add lazy proxy support monkey patch for http library
+* [Lazy] Return default values when no data has been loaded
+
 ## v0.1.18
 * [PriorityQueue] Fix highscore sorting
 
