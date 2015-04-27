@@ -10,8 +10,8 @@ class HTTP::Request
 
   # Override to implicitly apply proxy as required
   def proxy
-    if(@proxy.nil? &&_proxy_point = ENV["#{uri.scheme}_proxy"] && proxy_is_allowed?)
-      _proxy = URI.parse(_proxy_point)
+    if((@proxy.nil? || @proxy.empty?) && ENV["#{uri.scheme}_proxy"] && proxy_is_allowed?)
+      _proxy = URI.parse(ENV["#{uri.scheme}_proxy"])
       Hash.new.tap do |opts|
         opts[:proxy_address] = _proxy.host
         opts[:proxy_port] = _proxy.port
@@ -29,7 +29,7 @@ class HTTP::Request
   def proxy_is_allowed?
     if(ENV['no_proxy'])
       ENV['no_proxy'].to_s.split(',').map(&:strip).none? do |item|
-        File.fnmatch(uri.to_s, item)
+        File.fnmatch(item, [uri.host, uri.port].compact.join(':'))
       end
     else
       true
