@@ -9,6 +9,9 @@ require 'http/request'
 class HTTP::Request
 
   # Override to implicitly apply proxy as required
+  #
+  # NOTE: If dealing with https request, force port so CONNECT request
+  # will properly include destination port
   def proxy
     if((@proxy.nil? || @proxy.empty?) && ENV["#{uri.scheme}_proxy"] && proxy_is_allowed?)
       _proxy = URI.parse(ENV["#{uri.scheme}_proxy"])
@@ -34,6 +37,22 @@ class HTTP::Request
     else
       true
     end
+  end
+
+  # Compute HTTP request header SSL proxy connection
+  #
+  # NOTE: Provide override to get port included within request
+  def proxy_connect_header
+    if(@uri.port.nil?)
+      if(@uri.scheme == 'https')
+        dest_port = 443
+      else
+        dest_port = 80
+      end
+    else
+      dest_port = @uri.port
+    end
+    "CONNECT #{@uri.host}:#{dest_port} HTTP/#{version}"
   end
 
 end
