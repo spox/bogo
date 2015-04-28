@@ -1,3 +1,6 @@
+## v0.1.22
+* Fix CONNECT requests for HTTPS endpoints to properly include port
+
 ## v0.1.20
 * Add lazy proxy support monkey patch for http library
 * [Lazy] Return default values when no data has been loaded
