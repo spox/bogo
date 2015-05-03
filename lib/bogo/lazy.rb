@@ -149,20 +149,33 @@ module Bogo
             end
             if(coerce && !valid_type)
               item = coerce.arity == 2 ? coerce.call(item, self) : coerce.call(item)
+              if(item.is_a?(Hash) && item[:bogo_multiple])
+                item = item[:bogo_multiple]
+              else
+                item = [item]
+              end
+            else
+              item = [item]
             end
-            valid_type = valid_types.detect do |klass|
-              item.is_a?(klass)
+            invalid_type = item.detect do |_item|
+              valid_types.none? do |klass|
+                _item.is_a?(klass)
+              end
             end
-            unless(valid_type)
-              raise TypeError.new("Invalid type for `#{name}` (#{item} <#{item.class}>). Valid - #{valid_types.map(&:to_s).join(',')}")
+            if(invalid_type)
+              raise TypeError.new("Invalid type for `#{name}` (#{invalid_type} <#{invalid_type.class}>). Valid - #{valid_types.map(&:to_s).join(',')}")
             end
             if(allowed_values)
-              unless(allowed_values.include?(item))
-                raise ArgumentError.new("Invalid value provided for `#{name}` (#{item.inspect}). Allowed - #{allowed_values.map(&:inspect).join(', ')}")
+              unallowed = item.detect do |_item|
+                !allowed_values.include?(_item)
+              end
+              if(unallowed)
+                raise ArgumentError.new("Invalid value provided for `#{name}` (#{unallowed.inspect}). Allowed - #{allowed_values.map(&:inspect).join(', ')}")
               end
             end
             item
           end
+          values.flatten!(1)
           if(!multiple_values && !val.is_a?(Array))
             dirty[name] = values.first
           else
