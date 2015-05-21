@@ -13,6 +13,9 @@ describe Bogo::Lazy do
       attribute :integer_coerced, Integer, :coerce => lambda{|v| v.to_i}
       attribute :dependent_value, String, :depends => :value_loader
       attribute :missing_value, String
+      attribute :stringer_multiple, String, :multiple => true
+      attribute :stringer_multiple_coerce, String, :multiple => true, :coerce => lambda{|x| x.to_s}
+      attribute :stringer_multiple_coerce_multiple, Integer, :multiple => true, :coerce => lambda{|x| {:bogo_multiple => x.split(',').map(&:to_i)} }
 
       on_missing :missing_loader
     end
@@ -109,6 +112,30 @@ describe Bogo::Lazy do
     instance.dirty?(:stringer).must_equal false
     instance.dirty[:stringer].wont_equal 'a string'
     instance.data[:stringer].must_equal 'a string'
+  end
+
+  it 'should allow single values being set into multiple' do
+    instance.stringer_multiple = 'a string'
+    instance.stringer_multiple.must_equal ['a string']
+  end
+
+  it 'should allow multiple values being set into multiple' do
+    instance.stringer_multiple = ['a string', 'an string']
+    instance.stringer_multiple.must_equal ['a string', 'an string']
+  end
+
+  it 'should error when single value set into multple is incorrect type' do
+    ->{ instance.stringer_multiple = 2 }.must_raise TypeError
+  end
+
+  it 'should coerce multiple values to correct types' do
+    instance.stringer_multiple_coerce = [1, 2, '3']
+    instance.stringer_multiple_coerce.must_equal ['1', '2', '3']
+  end
+
+  it 'should coerce multiple values to correct types and allow coerce block to return multiples' do
+    instance.stringer_multiple_coerce_multiple = [1, 2, '3', '4,5,6']
+    instance.stringer_multiple_coerce_multiple.must_equal [1, 2, 3, 4, 5, 6]
   end
 
 end
