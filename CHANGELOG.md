@@ -1,3 +1,6 @@
+## v0.1.24
+* [Lazy] Allow multiple results from coercion output
+
 ## v0.1.22
 * Fix CONNECT requests for HTTPS endpoints to properly include port
 
