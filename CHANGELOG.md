@@ -1,3 +1,6 @@
+## v0.1.26
+* [Smash] Fix behavior around accessing falsey values
+
 ## v0.1.24
 * [Lazy] Allow multiple results from coercion output
 
