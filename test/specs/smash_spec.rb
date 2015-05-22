@@ -55,6 +55,16 @@ describe Bogo::Smash do
     instance.fetch(:a, :b, :c, 2).must_equal 1
   end
 
+  it 'should fetch false value' do
+    instance = Smash.new(:a => {:b => {:c => false}})
+    instance.fetch(:a, :b, :c, 2).must_equal false
+  end
+
+  it 'should fetch nil value' do
+    instance = Smash.new(:a => {:b => {:c => nil}})
+    instance.fetch(:a, :b, :c, 2).must_equal nil
+  end
+
   it 'should allow fetching missing value and returning default failover' do
     instance = Smash.new(:a => {:b => {:c => 1}})
     instance.fetch(:a, :b, :d, 2).must_equal 2
