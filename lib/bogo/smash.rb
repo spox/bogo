@@ -6,6 +6,10 @@ module Bogo
 
   # Customized Hash
   class Smash < Hash
+
+    class NoValue; end
+    NO_VALUE = NoValue.new
+
     include Hashie::Extensions::IndifferentAccess
     include Hashie::Extensions::MergeInitializer
     include Hashie::Extensions::DeepMerge
@@ -40,17 +44,25 @@ module Bogo
     # Get value at given path
     #
     # @param args [String, Symbol] key path to walk
-    # @return [Object, NilClass]
+    # @return [Object, NoValue]
     def retrieve(*args)
       args.inject(self) do |memo, key|
-        if(memo.is_a?(Hash))
+        if(memo.is_a?(Hash) && memo.to_smash.has_key?(key.to_s))
           memo.to_smash[key]
         else
-          nil
+          NO_VALUE
         end
       end
     end
-    alias_method :get, :retrieve
+
+    # Get value at given path
+    #
+    # @param args [String, Symbol] key path to walk
+    # @return [Object, NilClass]
+    def get(*args)
+      val = retrieve(*args)
+      val == NO_VALUE ? nil : val
+    end
 
     # Fetch value at given path or return a default value
     #
@@ -58,7 +70,8 @@ module Bogo
     # @return [Object] value at key or default value
     def fetch(*args)
       default_value = args.pop
-      retrieve(*args) || default_value
+      val = retrieve(*args)
+      val == NO_VALUE ? default_value : val
     end
 
     # Set value at given path
