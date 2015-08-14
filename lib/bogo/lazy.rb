@@ -67,7 +67,7 @@ module Bogo
       def valid_state
         data.merge!(dirty)
         dirty.clear
-        @_checksum = Digest::SHA256.hexdigest(MultiJson.dump(data))
+        @_checksum = Digest::SHA256.hexdigest(MultiJson.dump(data).to_s)
         self
       end
 
@@ -106,7 +106,7 @@ module Bogo
       # Disable dirty state
       def always_clean!
         self.class_eval do
-          def dirty?; false; end
+          def dirty?(*args); false; end
           def valid_state; self; end
           alias_method :dirty, :data
         end
