@@ -7,6 +7,7 @@ module Bogo
   autoload :Lazy, 'bogo/lazy'
   autoload :Memoization, 'bogo/memoization'
   autoload :PriorityQueue, 'bogo/priority_queue'
+  autoload :Retry, 'bogo/retry'
   autoload :Smash, 'bogo/smash'
   autoload :Utility, 'bogo/utility'
 end
