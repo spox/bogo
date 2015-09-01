@@ -1,3 +1,7 @@
+## v0.1.28
+* [Smash] Ensure valid data type on checksum generation
+* [Retry] Add new retry abstract and concrete subclasses
+
 ## v0.1.26
 * [Smash] Fix behavior around accessing falsey values
 
