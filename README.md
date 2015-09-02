@@ -331,6 +331,16 @@ Bogo::Retry.build(:flat, :wait_interval => 2) do
 end
 ```
 
+If the value of the action is required, disable auto run
+and explicitly start the retry:
+
+```ruby
+value = Bogo::Retry.build(:flat, :auto_run => false) do
+  puts 'This is run within a Bogo::Retry::Flat instance!'
+  42
+end.run!
+```
+
 #### `Bogo::Retry::Flat`
 
 The flat retry implementation will always wait the `wait_interval`
