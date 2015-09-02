@@ -135,23 +135,16 @@ module Bogo
 
       # @return [Numeric]
       attr_reader :wait_interval
-      # @return [Numeric]
-      attr_reader :wait_multiplier
 
       # Create a new linear retry instance
       #
       # @param args [Hash]
       # @option args [Numeric] :wait_interval Defaults to 5 seconds
-      # @option args [Numeric] :wait_multiplier Defaults to 2
       # @return [self]
       def initialize(args={}, &block)
         @wait_interval = args[:wait_interval].to_f
-        @wait_multiplier = args[:wait_multiplier].to_f
         unless(@wait_interval > 0)
           @wait_interval = 5
-        end
-        unless(@wait_multiplier > 0)
-          @wait_multiplier = 2
         end
         super
       end
