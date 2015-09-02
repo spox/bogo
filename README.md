@@ -310,5 +310,48 @@ e_file.close
 puts "File exists: #{File.exists?(path)}"
 ```
 
+## Retry
+
+Retry an action until success or maximum number of attempts
+has been reached.
+
+### `Bogo::Retry`
+
+This is an abstract class and does not provide actual retry
+functionality. Custom concrete implementations must define a
+`#wait_on_failure` method that provides the number of seconds
+to wait until the next attempt.
+
+The `Bogo::Retry` does provide an easy way to generate a
+retry instance:
+
+```ruby
+Bogo::Retry.build(:flat, :wait_interval => 2) do
+  puts 'This is run within a Bogo::Retry::Flat instance!'
+end
+```
+
+#### `Bogo::Retry::Flat`
+
+The flat retry implementation will always wait the `wait_interval`
+value before retry.
+
+* `:wait_interval` - Numeric (default: 5)
+
+#### `Bogo::Retry::Linear`
+
+The linear retry implementation will increase the wait time between
+retries at a linear rate before retry:
+
+* `:wait_interval` - Numeric (default: 5)
+
+#### `Bogo::Retry::Exponential`
+
+The exponential retry implementation will increase the wait time
+between retries at an exponential rate before retry:
+
+* `:wait_interval` - Numeric (default: 5)
+* `:wait_exponent` - Numeric (default: 2)
+
 # Info
 * Repository: https://github.com/spox/bogo
