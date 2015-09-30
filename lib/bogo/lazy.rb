@@ -67,7 +67,7 @@ module Bogo
       def valid_state
         data.merge!(dirty)
         dirty.clear
-        @_checksum = Digest::SHA256.hexdigest(MultiJson.dump(data).to_s)
+        @_checksum = Digest::SHA256.hexdigest(MultiJson.dump(data.inspect).to_s)
         self
       end
 
@@ -81,7 +81,7 @@ module Bogo
         else
           if(@_checksum)
             !dirty.empty? ||
-              @_checksum != Digest::SHA256.hexdigest(MultiJson.dump(data))
+              @_checksum != Digest::SHA256.hexdigest(MultiJson.dump(data.inspect).to_s)
           else
             true
           end
