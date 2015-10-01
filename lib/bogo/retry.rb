@@ -52,7 +52,10 @@ module Bogo
 
     # Run action until success
     #
-    # return [Object] result of action
+    # @yield optional to allow custom exception check
+    # @yieldparam [Exception] exception caught
+    # @yieldreturn [TrueClass, FalseClass] if retry should be peformed
+    # @return [Object] result of action
     def run!
       if(dead)
         raise RuntimeError.new "Action has already reached maximum allowed attempts (#{max_attempts})!"
@@ -61,6 +64,9 @@ module Bogo
           log_attempt!
           action.call
         rescue => e
+          if(block_given?)
+            raise unless yield(e)
+          end
           if(max_attempts.nil? || attempts < max_attempts)
             interval = wait_on_failure(e)
             if(ui)
@@ -72,7 +78,7 @@ module Bogo
             sleep(interval)
             retry
           else
-            if(ui)
+            if(ui && max_attempts.to_i > 0)
               ui.error "#{description} failed (#{e.class}: #{e}) - Maximum number of attempts reached!"
             end
             @dead = true
