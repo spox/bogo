@@ -1,3 +1,7 @@
+## v0.1.30
+* [Lazy] Inspect data prior to checksum to prevent circular issues
+* [Retry] Support custom block to determine retry
+
 ## v0.1.28
 * [Smash] Ensure valid data type on checksum generation
 * [Retry] Add new retry abstract and concrete subclasses
