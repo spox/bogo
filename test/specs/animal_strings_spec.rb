@@ -32,6 +32,10 @@ describe Bogo::AnimalStrings do
       @rawr.camel('this__is_camel___cased').must_equal 'ThisIsCamelCased'
     end
 
+    it 'should support leading lower case camel' do
+      @rawr.camel('this_is_camel_cased', false).must_equal 'thisIsCamelCased'
+    end
+
   end
 
 end
