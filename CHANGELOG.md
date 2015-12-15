@@ -1,3 +1,6 @@
+## v0.1.32
+* [AnimalStrings] Add support for leading and non-leading upcase
+
 ## v0.1.30
 * [Lazy] Inspect data prior to checksum to prevent circular issues
 * [Retry] Support custom block to determine retry
