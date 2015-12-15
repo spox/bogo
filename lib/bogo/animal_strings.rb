@@ -5,10 +5,16 @@ module Bogo
   module AnimalStrings
 
     # Camel case string
+    #
     # @param string [String]
+    # @param leading_upcase [TrueClass, FalseClass] camel case first letter
     # @return [String]
-    def camel(string)
-      string.to_s.split('_').map{|k| "#{k.slice(0,1).upcase}#{k.slice(1,k.length)}"}.join
+    def camel(string, leading_upcase=true)
+      head, tail = leading_upcase ? [nil, string] : string.split('_', 2)
+      tail = tail.to_s.split('_').map do |k|
+        "#{k.slice(0,1).upcase}#{k.slice(1,k.length)}"
+      end.join
+      [head, tail.empty? ? nil : tail].compact.join
     end
 
     # Snake case (underscore) string
