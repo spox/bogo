@@ -109,6 +109,7 @@ module Bogo
           def dirty?(*args); false; end
           def valid_state; self; end
           alias_method :dirty, :data
+          alias_method :attributes, :data
         end
       end
 
