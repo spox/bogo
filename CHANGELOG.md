@@ -1,3 +1,6 @@
+# v0.2.2
+* [Memoization] Add #memoized? helper
+
 # v0.2.0
 * [Lazy] Map #attributes to #data when flagged always clean
 
