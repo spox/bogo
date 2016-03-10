@@ -72,6 +72,25 @@ module Bogo
       Thread.current[:bogo_memoization]
     end
 
+    # Check if memoization entry for given key exists
+    #
+    # @param key [String, Symbol] identifier for data
+    # @param direct [Truthy, Falsey] direct skips key prepend of object id
+    # @return [TrueClass, FalseClass]
+    def memoized?(key, direct=false)
+      unless(direct)
+        key = "#{self.object_id}_#{key}"
+      end
+      if(direct == :global)
+        Thread.exclusive do
+          $bogo_memoization ||= Smash.new
+          $bogo_memoization.key?(key)
+        end
+      else
+        _memo.key?(key)
+      end
+    end
+
     # Remove memoized value
     #
     # @param key [String, Symbol] identifier for data
