@@ -1,4 +1,4 @@
-require 'minitest/autorun'
+require_relative '../spec'
 
 describe Bogo::Memoization do
 
@@ -41,6 +41,13 @@ describe Bogo::Memoization do
       end.join
       a.memoize(:x){ :foobar }.must_equal :fubar
       b.memoize(:x){ :foobar }.must_equal :feebar
+    end
+
+    it 'should identify memoized value' do
+      a = @klass.new
+      a.memoize(:x){ :fubar }
+      a.memoized?(:x).must_equal true
+      a.memoized?(:y).must_equal false
     end
 
   end
@@ -89,6 +96,13 @@ describe Bogo::Memoization do
       b.memoize(:x, true){ :foobar }.must_equal :fubar
     end
 
+    it 'should identify memoized value' do
+      a = @klass.new
+      a.memoize(:x, true){ :fubar }
+      a.memoized?(:x, true).must_equal true
+      a.memoized?(:y, true).must_equal false
+    end
+
   end
 
   describe 'Global memoization' do
@@ -134,6 +148,13 @@ describe Bogo::Memoization do
       end.join
       a.memoize(:x, :global){ :foobar }.must_equal :fubar
       b.memoize(:x, :global){ :foobar }.must_equal :fubar
+    end
+
+    it 'should identify memoized value' do
+      a = @klass.new
+      a.memoize(:x, :global){ :fubar }
+      a.memoized?(:x, :global).must_equal true
+      a.memoized?(:y, :global).must_equal false
     end
 
   end

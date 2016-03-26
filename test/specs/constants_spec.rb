@@ -1,4 +1,4 @@
-require 'minitest/autorun'
+require_relative '../spec'
 
 class BogoConstTop
   include Bogo::Constants
