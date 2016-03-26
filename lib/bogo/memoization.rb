@@ -4,6 +4,11 @@ module Bogo
   # Memoization helpers
   module Memoization
 
+    # Lock for providing exclusive access
+    EXCLUSIVE_LOCK = Mutex.new
+    # Holder for global memoization items
+    GLOBAL_MEMOS = Smash.new
+
     class << self
 
       # Clean up isolated memoizations
@@ -29,8 +34,8 @@ module Bogo
       #
       # @return [nil]
       def clear_global!
-        Thread.exclusive do
-          $bogo_memoization = Smash.new
+        EXCLUSIVE_LOCK.synchronize do
+          GLOBAL_MEMOS.clear
         end
       end
 
@@ -48,12 +53,11 @@ module Bogo
         key = "#{self.object_id}_#{key}"
       end
       if(direct == :global)
-        Thread.exclusive do
-          $bogo_memoization ||= Smash.new
-          unless($bogo_memoization.has_key?(key))
-            $bogo_memoization[key] = yield
+        EXCLUSIVE_LOCK.synchronize do
+          unless(GLOBAL_MEMOS.has_key?(key))
+            GLOBAL_MEMOS[key] = yield
           end
-          $bogo_memoization[key]
+          GLOBAL_MEMOS[key]
         end
       else
         unless(_memo.has_key?(key))
@@ -82,9 +86,8 @@ module Bogo
         key = "#{self.object_id}_#{key}"
       end
       if(direct == :global)
-        Thread.exclusive do
-          $bogo_memoization ||= Smash.new
-          $bogo_memoization.key?(key)
+        EXCLUSIVE_LOCK.synchronize do
+          GLOBAL_MEMOS.key?(key)
         end
       else
         _memo.key?(key)
@@ -101,9 +104,8 @@ module Bogo
         key = "#{self.object_id}_#{key}"
       end
       if(direct == :global)
-        Thread.exclusive do
-          $bogo_memoization ||= Smash.new
-          $bogo_memoization.delete(key)
+        EXCLUSIVE_LOCK.synchronize do
+          GLOBAL_MEMOS.delete(key)
         end
       else
         _memo.delete(key)
