@@ -1,3 +1,6 @@
+# v0.2.4
+* [Memoization] Refactor to remove Ruby 2.3 deprecation warnings
+
 # v0.2.2
 * [Memoization] Add #memoized? helper
 
