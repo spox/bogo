@@ -1,5 +1,4 @@
-require 'bogo'
-require 'minitest/autorun'
+require_relative '../spec'
 
 describe Bogo::PriorityQueue do
 

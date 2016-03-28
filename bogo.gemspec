@@ -14,5 +14,6 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'multi_json'
   s.add_development_dependency 'pry'
   s.add_development_dependency 'minitest'
+  s.add_development_dependency 'rake', '~> 10'
   s.files = Dir['lib/**/*'] + %w(bogo.gemspec README.md CHANGELOG.md CONTRIBUTING.md LICENSE)
 end
