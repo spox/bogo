@@ -42,15 +42,22 @@ module Bogo
     end
 
     # Get value at given path
+    # Very hot code, so optimizing with dig on ruby 2.3+
     #
     # @param args [String, Symbol] key path to walk
     # @return [Object, NoValue]
-    def retrieve(*args)
-      args.inject(self) do |memo, key|
-        if(memo.is_a?(Hash) && memo.to_smash.has_key?(key.to_s))
-          memo.to_smash[key]
-        else
-          NO_VALUE
+    if {}.respond_to?(:dig)
+      def retrieve(*args)
+        dig(*args) || NO_VALUE
+      end
+    else
+      def retrieve(*args)
+        args.inject(self) do |memo, key|
+          if(memo.is_a?(Hash))
+            memo[key]
+          else
+            NO_VALUE
+          end
         end
       end
     end
