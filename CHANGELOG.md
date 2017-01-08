@@ -1,3 +1,6 @@
+# v0.2.6
+* [Smash] Use Hash#dig if available to speed up access (GH-5)
+
 # v0.2.4
 * [Memoization] Refactor to remove Ruby 2.3 deprecation warnings
 
