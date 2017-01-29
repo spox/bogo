@@ -1,3 +1,6 @@
+# v0.2.8
+* [Smash] Support block default values via Smash#fetch
+
 # v0.2.6
 * [Smash] Use Hash#dig if available to speed up access (GH-5)
 
