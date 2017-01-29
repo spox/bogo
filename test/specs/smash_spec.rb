@@ -65,6 +65,26 @@ describe Bogo::Smash do
     instance.fetch(:a, :b, :c, 2).must_equal nil
   end
 
+  it 'should raise error when not enough args provided to fetch' do
+    instance = Smash.new(:a => {:b => {:c => nil}})
+    ->{ instance.fetch }.must_raise ArgumentError
+  end
+
+  it 'should return nil when default value not provided and value not found' do
+    instance = Smash.new(:a => {:b => {:c => nil}})
+    instance.fetch(:b).must_equal nil
+  end
+
+  it 'should support a block defined default value' do
+    instance = Smash.new(:a => {:b => {:c => nil}})
+    instance.fetch(:z){ 'default_value' }.must_equal 'default_value'
+  end
+
+  it 'should receive smash instance when evaluating block default' do
+    instance = Smash.new(:a => {:b => {:c => 'test_value'}})
+    instance.fetch(:z){|i| i.get(:a, :b, :c)}.must_equal 'test_value'
+  end
+
   it 'should allow fetching missing value and returning default failover' do
     instance = Smash.new(:a => {:b => {:c => 1}})
     instance.fetch(:a, :b, :d, 2).must_equal 2

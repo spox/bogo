@@ -83,10 +83,20 @@ module Bogo
     #
     # @param args [String, Symbol, Object] key path to walk. last value default to return
     # @return [Object] value at key or default value
-    def fetch(*args)
-      default_value = args.pop
-      val = retrieve(*args)
-      val == NO_VALUE ? default_value : val
+    def fetch(*args, &block)
+      if(block_given?)
+        default_value = block
+      elsif(args.size > 1)
+        default_value = args.pop
+      elsif(args.size < 1)
+        raise ArgumentError.new("Default value must be provided for #fetch")
+      end
+      result = retrieve(*args)
+      if(result == NO_VALUE)
+        block_given? ? default_value.call(self) : default_value
+      else
+        result
+      end
     end
 
     # Set value at given path
