@@ -144,10 +144,13 @@ module Bogo
             end
             if(val.respond_to?(:dup))
               begin
-                val.dup
+                val = val.dup
               rescue
                 val
               end
+            end
+            if(val.respond_to?(:freeze))
+              val.freeze
             else
               val
             end

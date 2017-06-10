@@ -41,6 +41,20 @@ describe Bogo::Lazy do
       end
     end
 
+    it 'cannot not modify original value' do
+      instance.stringer = 'a value'
+      instance.valid_state
+      instance.stringer.must_equal('a value')
+      ->{ instance.stringer.replace('new value') }.must_raise(RuntimeError)
+    end
+
+    it 'can modify modified value' do
+      instance.stringer = 'a value'
+      instance.valid_state
+      instance.stringer = 'new value'
+      instance.stringer.replace('replace value').must_equal 'replace value'
+    end
+
     it 'should only allow string value to be set' do
       instance.stringer = 'a string'
       instance.stringer.must_equal 'a string'
