@@ -1,3 +1,6 @@
+# v0.2.10
+* [Lazy] Dup and freeze non-dirty values
+
 # v0.2.8
 * [Smash] Support block default values via Smash#fetch
 
