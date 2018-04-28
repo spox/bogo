@@ -1,3 +1,6 @@
+# v0.2.12
+* [Lazy] Add #to_h helper
+
 # v0.2.10
 * [Lazy] Dup and freeze non-dirty values
 
