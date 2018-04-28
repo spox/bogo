@@ -34,6 +34,12 @@ describe Bogo::Lazy do
 
     let(:instance){ @instance }
 
+    it 'should convert to a hash' do
+      instance.stringer = 'a value'
+      val = instance.to_h
+      val['stringer'].must_equal 'a value'
+    end
+
     it 'should provide accessor and setter methods' do
       %w(stringer multi_type stringer_default integer_coerced).each do |name|
         instance.respond_to?(name).must_equal true
@@ -45,7 +51,7 @@ describe Bogo::Lazy do
       instance.stringer = 'a value'
       instance.valid_state
       instance.stringer.must_equal('a value')
-      ->{ instance.stringer.replace('new value') }.must_raise(RuntimeError)
+      ->{ instance.stringer.replace('new value') }.must_raise(FrozenError)
     end
 
     it 'can modify modified value' do

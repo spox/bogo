@@ -98,6 +98,16 @@ module Bogo
         "<#{self.class.name}:#{object_id} [#{data.inspect}]>"
       end
 
+      # @return [Hash]
+      def to_h
+        Hash[
+          attributes.map{|k,v|
+            [k, v.is_a?(Array) ?
+              v.map{|x| x.respond_to?(:to_h) ? x.to_h : x} :
+              v.respond_to?(:to_h) ? v.to_h : v]
+          }
+        ]
+      end
     end
 
     # Class methods for laziness
