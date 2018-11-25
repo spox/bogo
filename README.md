@@ -376,5 +376,42 @@ between retries at an exponential rate before retry:
 * `:wait_interval` - Numeric (default: 5)
 * `:wait_exponent` - Numeric (default: 2)
 
+## `Bogo::Logger`
+
+This is a wrapped stdlib Logger instance to provide thread-safe
+access for logging. It includes a `Bogo::Logger#named` method for
+creating sub-loggers.
+
+```ruby
+require 'bogo'
+
+base = Bogo::Logger.new
+base.progname = 'base'
+base.info 'test'
+
+sub = base.named(:sub)
+sub.info 'test'
+```
+
+### `Bogo::Logger::Helpers`
+
+Adds a `#logger` method when included which provides access to the
+global logger. Name can be customized using `.logger_name`.
+
+```ruby
+require 'bogo'
+
+class Fubar
+  class Thing
+    include Bogo::Logger::Helpers
+    logger_name(:thing)
+
+    def test
+      logger.info "test"
+    end
+  end
+end
+```
+
 # Info
 * Repository: https://github.com/spox/bogo
