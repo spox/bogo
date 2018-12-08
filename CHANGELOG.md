@@ -1,3 +1,6 @@
+# v0.2.14
+* [Logger] Add logging helpers
+
 # v0.2.12
 * [Lazy] Add #to_h helper
 
