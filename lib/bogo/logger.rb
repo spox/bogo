@@ -47,6 +47,7 @@ module Bogo
       end
       @base_args = logger_args
       logger = ::Logger.new(*@base_args)
+      logger.level = :fatal
       @wrapped_logger = Concurrent::MVar.new(logger)
     end
 
