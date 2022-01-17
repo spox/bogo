@@ -12,9 +12,8 @@ Gem::Specification.new do |s|
   s.license = "Apache 2.0"
   s.add_runtime_dependency "hashie"
   s.add_runtime_dependency "multi_json"
-  s.add_runtime_dependency "concurrent-ruby", "~> 1.1.3"
   s.add_development_dependency "pry"
   s.add_development_dependency "minitest"
-  s.add_development_dependency "rake", "~> 10"
+  s.add_development_dependency "rake"
   s.files = Dir["lib/**/*"] + %w(bogo.gemspec README.md CHANGELOG.md CONTRIBUTING.md LICENSE)
 end
