@@ -10,6 +10,7 @@ module Bogo
   autoload :PriorityQueue, "bogo/priority_queue"
   autoload :Retry, "bogo/retry"
   autoload :Smash, "bogo/smash"
+  autoload :Stack, "bogo/stack"
   autoload :Utility, "bogo/utility"
 end
 
