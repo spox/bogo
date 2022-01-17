@@ -1,10 +1,7 @@
-require 'bogo'
-
 module Bogo
   # Specialized priority based queue
   # @note does not allow duplicate objects to be queued
   class PriorityQueue
-
     # Create a new priority queue
     #
     # @return [self]

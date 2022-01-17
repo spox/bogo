@@ -1,16 +1,12 @@
-require 'bogo'
-
 module Bogo
   # Memoization helpers
   module Memoization
-
     # Lock for providing exclusive access
     EXCLUSIVE_LOCK = Mutex.new
     # Holder for global memoization items
     GLOBAL_MEMOS = Smash.new
 
     class << self
-
       # Clean up isolated memoizations
       #
       # @param object_id [Object]

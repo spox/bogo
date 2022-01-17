@@ -1,10 +1,6 @@
-require 'bogo'
-
 module Bogo
-
   # Constant helper
   module Constants
-
     # Convert string to constant
     #
     # @param string [String] full constant name

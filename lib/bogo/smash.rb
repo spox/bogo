@@ -1,12 +1,9 @@
 require 'hashie'
 require 'digest/sha2'
-require 'bogo'
 
 module Bogo
-
   # Customized Hash
   class Smash < Hash
-
     class NoValue; end
     NO_VALUE = NoValue.new
 

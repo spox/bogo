@@ -1,5 +1,3 @@
-require 'bogo'
-
 module Bogo
   # Animal stylings on strings
   module AnimalStrings

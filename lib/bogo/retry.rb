@@ -1,10 +1,6 @@
-require 'bogo'
-
 module Bogo
-
   # Perform action and retry until successful or abort
   class Retry
-
     # Create a type of retry
     #
     # @param type [String, Symbol] name of retry type
