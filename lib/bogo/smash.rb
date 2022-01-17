@@ -22,7 +22,7 @@ module Bogo
       if(args.first.is_a?(::Hash))
         base = args.shift
       end
-      super *args
+      super(*args)
       if(base)
         self.replace(base.to_smash)
       end
@@ -86,7 +86,8 @@ module Bogo
       elsif(args.size > 1)
         default_value = args.pop
       elsif(args.size < 1)
-        raise ArgumentError.new("Default value must be provided for #fetch")
+        raise ArgumentError,
+          "Default value must be provided for #fetch"
       end
       result = retrieve(*args)
       if(result == NO_VALUE)
@@ -102,7 +103,8 @@ module Bogo
     # @return [Object] value set
     def set(*args)
       unless(args.size > 1)
-        raise ArgumentError.new 'Set requires at least one key and a value'
+        raise ArgumentError,
+          'Set requires at least one key and a value'
       end
       value = args.pop
       set_key = args.pop
@@ -129,13 +131,11 @@ module Bogo
     def checksum
       Digest::SHA256.hexdigest(self.to_smash(:sorted).to_s)
     end
-
   end
 end
 
 # Hook helper into toplevel `Hash`
 class Hash
-
   # Convert to Smash
   #
   # @return [Smash]
@@ -195,11 +195,9 @@ class Hash
       args.include?(:freeze) ? obj.freeze : obj
     end
   end
-
 end
 
 class Array
-
   # Iterates searching for Hash types to auto convert
   #
   # @return [Array]
@@ -212,7 +210,6 @@ class Array
       end
     end
   end
-
 end
 
 unless(defined?(Smash))

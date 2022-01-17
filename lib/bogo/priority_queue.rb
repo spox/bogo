@@ -21,10 +21,12 @@ module Bogo
     def push(item, cost=nil, &block)
       lock.synchronize do
         if(queue[item])
-          raise ArgumentError.new "Item already exists in queue. Items must be unique! (#{item})"
+          raise ArgumentError,
+            "Item already exists in queue. Items must be unique! (#{item})"
         end
         unless(cost || block_given?)
-          raise ArgumentError.new 'Cost must be provided as parameter or block!'
+          raise ArgumentError,
+            'Cost must be provided as parameter or block!'
         end
         @block_costs += 1 if cost.nil?
         queue[item] = cost || block
@@ -42,10 +44,12 @@ module Bogo
         items.each do |item_pair|
           item, cost = item_pair
           if(queue[item])
-            raise ArgumentError.new "Item already exists in queue. Items must be unique! (#{item})"
+            raise ArgumentError,
+              "Item already exists in queue. Items must be unique! (#{item})"
           end
           unless(cost.is_a?(Numeric) || cost.is_a?(Proc))
-            raise ArgumentError.new "Cost must be provided as parameter or proc! (item: #{item})"
+            raise ArgumentError,
+              "Cost must be provided as parameter or proc! (item: #{item})"
           end
           @block_costs += 1 if cost.is_a?(Proc)
           queue[item] = cost
@@ -103,7 +107,5 @@ module Bogo
     protected
 
     attr_reader :queue, :lock
-
   end
-
 end

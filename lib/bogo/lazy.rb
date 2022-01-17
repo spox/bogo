@@ -1,21 +1,35 @@
-require 'bogo'
 require 'multi_json'
+require 'monitor'
 require 'digest/sha2'
 
 module Bogo
   # Adds functionality to facilitate laziness
   module Lazy
-
     # Instance methods for laziness
     module InstanceMethods
 
+      def self.included(klass)
+        klass.include(MonitorMixin)
+        klass.instance_variable_set(:@calling_on_missing, false)
+        klass.class_eval do
+          alias_method :unlazy_initialize, :initialize
+          def initialize(*args, **opts, &block)
+            @data = nil
+            @dirty = Smash.new
+            unlazy_initialize(*args, **opts, &block)
+          end
+        end
+      end
+
       # @return [Smash] argument hash
       def data
-        unless(@data)
-          @data = Smash.new
-          self.class.attributes.each do |key, value|
-            if(value.has_key?('default'))
-              @data[key] = value['default']
+        synchronize do
+          unless(@data)
+            @data = Smash.new
+            self.class.attributes.each do |key, value|
+              if(value.has_key?('default'))
+                @data[key] = value['default']
+              end
             end
           end
         end
@@ -24,15 +38,17 @@ module Bogo
 
       # @return [Smash] updated data
       def dirty
-        unless(@dirty)
-          @dirty = Smash.new
+        synchronize do
+          unless(@dirty)
+            @dirty = Smash.new
+          end
         end
         @dirty
       end
 
       # @return [Smash] current data state
       def attributes
-        data.merge(dirty)
+        synchronize { data.merge(dirty) }
       end
 
       # Create new instance
@@ -40,20 +56,22 @@ module Bogo
       # @param args [Hash]
       # @return [self]
       def load_data(args={})
-        args = args.to_smash
-        @data = Smash.new
-        self.class.attributes.each do |name, options|
-          val = args[name]
-          if(options[:required] && !args.has_key?(name) && !options.has_key?(:default))
-            raise ArgumentError.new("Missing required option: `#{name}`")
-          end
-          if(val.nil? && !args.has_key?(name) && options[:default])
-            if(options[:default])
-              val = options[:default].respond_to?(:call) ? options[:default].call : options[:default]
+        synchronize do
+          args = args.to_smash
+          @data = Smash.new
+          self.class.attributes.each do |name, options|
+            val = args[name]
+            if(options[:required] && !args.has_key?(name) && !options.has_key?(:default))
+              raise ArgumentError.new("Missing required option: `#{name}`")
             end
-          end
-          if(args.has_key?(name) || val)
-            self.send("#{name}=", val)
+            if(val.nil? && !args.has_key?(name) && options[:default])
+              if(options[:default])
+                val = options[:default].respond_to?(:call) ? options[:default].call : options[:default]
+              end
+            end
+            if(args.has_key?(name) || val)
+              self.send("#{name}=", val)
+            end
           end
         end
         self
@@ -65,9 +83,11 @@ module Bogo
       #
       # @return [self]
       def valid_state
-        data.merge!(dirty)
-        dirty.clear
-        @_checksum = Digest::SHA256.hexdigest(MultiJson.dump(data.inspect).to_s)
+        synchronize do
+          data.merge!(dirty)
+          dirty.clear
+          @_checksum = Digest::SHA256.hexdigest(MultiJson.dump(data.inspect).to_s)
+        end
         self
       end
 
@@ -76,14 +96,16 @@ module Bogo
       # @param attr [String, Symbol] name of attribute
       # @return [TrueClass, FalseClass] model or attribute is dirty
       def dirty?(attr=nil)
-        if(attr)
-          dirty.has_key?(attr)
-        else
-          if(@_checksum)
-            !dirty.empty? ||
-              @_checksum != Digest::SHA256.hexdigest(MultiJson.dump(data.inspect).to_s)
+        synchronize do
+          if(attr)
+            dirty.has_key?(attr)
           else
-            true
+            if(@_checksum)
+              !dirty.empty? ||
+                @_checksum != Digest::SHA256.hexdigest(MultiJson.dump(data.inspect).to_s)
+            else
+              true
+            end
           end
         end
       end
@@ -100,19 +122,20 @@ module Bogo
 
       # @return [Hash]
       def to_h
-        Hash[
-          attributes.map{|k,v|
-            [k, v.is_a?(Array) ?
-              v.map{|x| x.respond_to?(:to_h) ? x.to_h : x} :
-              v.respond_to?(:to_h) ? v.to_h : v]
-          }
-        ]
+        synchronize do
+          Hash[
+            attributes.map{|k,v|
+              [k, v.is_a?(Array) ?
+                v.map{|x| x.respond_to?(:to_h) ? x.to_h : x} :
+                v.respond_to?(:to_h) ? v.to_h : v]
+            }
+          ]
+        end
       end
     end
 
     # Class methods for laziness
     module ClassMethods
-
       # Disable dirty state
       def always_clean!
         self.class_eval do
@@ -264,11 +287,9 @@ module Bogo
         @attributes = attrs.to_smash
         true
       end
-
     end
 
     class << self
-
       # Injects laziness into class
       #
       # @param klass [Class]
@@ -278,16 +299,12 @@ module Bogo
           extend ClassMethods
 
           class << self
-
             def inherited(klass)
               klass.set_attributes(self.attributes.to_smash)
             end
-
           end
         end
       end
-
     end
-
   end
 end

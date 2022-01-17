@@ -22,7 +22,5 @@ module Bogo
     def snake(string)
       string.to_s.gsub(/([a-z])([A-Z])/, '\1_\2').gsub('-', '_').downcase
     end
-
   end
-
 end

@@ -34,7 +34,6 @@ module Bogo
           GLOBAL_MEMOS.clear
         end
       end
-
     end
 
     # Memoize data
@@ -119,6 +118,5 @@ module Bogo
       end
       true
     end
-
   end
 end

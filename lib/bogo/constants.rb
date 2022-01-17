@@ -36,7 +36,5 @@ module Bogo
         constantize(klass.join('::'))
       end
     end
-
   end
-
 end

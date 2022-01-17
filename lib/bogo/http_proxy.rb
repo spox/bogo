@@ -7,7 +7,6 @@ require 'http/request'
 # library to allow easy sharing. It is the responsibility of the user
 # to ensure the http gem is available!
 class HTTP::Request
-
   # Override to implicitly apply proxy as required
   #
   # NOTE: If dealing with https request, force port so CONNECT request
@@ -54,5 +53,4 @@ class HTTP::Request
     end
     "CONNECT #{@uri.host}:#{dest_port} HTTP/#{version}"
   end
-
 end

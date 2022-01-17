@@ -1,4 +1,3 @@
-require "concurrent"
 require "logger"
 
 module Bogo
@@ -46,9 +45,9 @@ module Bogo
         logger_args = [$stderr]
       end
       @base_args = logger_args
-      logger = ::Logger.new(*@base_args)
-      logger.level = :fatal
-      @wrapped_logger = Concurrent::MVar.new(logger)
+      @logger = ::Logger.new(*@base_args)
+      @logger.level = :fatal
+      @lock = Mutex.new
     end
 
     # Create a new logger with the sub-name provided
@@ -71,15 +70,9 @@ module Bogo
       next if l_m.to_s.start_with?("_") || l_m.to_s == "object_id"
       class_eval <<-EOC
       def #{l_m}(*ma, &mb)
-      wrapped_logger.borrow { |l| l.send(:#{l_m}, *ma, &mb) }
+        @lock.synchronize { @logger.send(:#{l_m}, *ma, &mb) }
       end
       EOC
-    end
-
-    protected
-
-    def wrapped_logger
-      @wrapped_logger
     end
   end
 end

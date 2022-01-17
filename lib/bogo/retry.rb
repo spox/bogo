@@ -34,7 +34,8 @@ module Bogo
     # @return [self]
     def initialize(args={}, &block)
       unless(block)
-        raise ArgumentError.new 'Expecting block but no block was provided!'
+        raise ArgumentError,
+          'Expecting block but no block was provided!'
       end
       args = args.to_smash
       @ui = args[:ui]
@@ -54,7 +55,8 @@ module Bogo
     # @return [Object] result of action
     def run!
       if(dead)
-        raise RuntimeError.new "Action has already reached maximum allowed attempts (#{max_attempts})!"
+        raise RuntimeError,
+          "Action has already reached maximum allowed attempts (#{max_attempts})!"
       else
         begin
           log_attempt!
@@ -106,7 +108,6 @@ module Bogo
 
     # Flat retry implementation
     class Flat < Retry
-
       # @return [Numeric]
       attr_reader :wait_interval
 
@@ -129,12 +130,10 @@ module Bogo
       def wait_on_failure(*_)
         wait_interval
       end
-
     end
 
     # Linear retry implementation
     class Linear < Retry
-
       # @return [Numeric]
       attr_reader :wait_interval
 
@@ -157,12 +156,10 @@ module Bogo
       def wait_on_failure(*_)
         wait_interval * attempts
       end
-
     end
 
     # Exponential retry implementation
     class Exponential < Retry
-
       # @return [Numeric]
       attr_reader :wait_interval
       # @return [Numeric]
@@ -192,9 +189,6 @@ module Bogo
       def wait_on_failure(*_)
         retries == 0 ? wait_interval : (wait_interval + retries) ** wait_exponent
       end
-
     end
-
   end
-
 end
