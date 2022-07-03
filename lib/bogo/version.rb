@@ -1,4 +1,4 @@
 module Bogo
   # Current library version
-  VERSION = Gem::Version.new("0.2.15.pre")
+  VERSION = Gem::Version.new("0.2.15")
 end
