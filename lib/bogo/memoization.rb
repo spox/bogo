@@ -15,7 +15,7 @@ module Bogo
         proc do
           Thread.current[:bogo_memoization].delete_if do |k,v|
             k.to_s.start_with?(object_id.to_s)
-          end
+          end if Thread.current[:bogo_memoization].is_a?(Hash)
         end
       end
 
