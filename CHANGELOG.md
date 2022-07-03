@@ -1,3 +1,7 @@
+# v0.2.15
+* [Logger] Fix frozen string modification (#6)
+* [Stack] Add stack
+
 # v0.2.14
 * [Logger] Add logging helpers
 
