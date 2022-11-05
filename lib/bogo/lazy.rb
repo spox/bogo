@@ -11,19 +11,16 @@ module Bogo
       def self.included(klass)
         klass.include(MonitorMixin)
         klass.instance_variable_set(:@calling_on_missing, false)
-        klass.class_eval do
-          alias_method :unlazy_initialize, :initialize
-          def initialize(*args, **opts, &block)
-            @data = nil
-            @dirty = Smash.new
-            unlazy_initialize(*args, **opts, &block)
-          end
-        end
+      end
+
+      # @return [Monitor] Monitor instance for synchronization
+      def _mon
+        @mon ||= Monitor.new
       end
 
       # @return [Smash] argument hash
       def data
-        synchronize do
+        _mon.synchronize do
           unless(@data)
             @data = Smash.new
             self.class.attributes.each do |key, value|
@@ -38,7 +35,7 @@ module Bogo
 
       # @return [Smash] updated data
       def dirty
-        synchronize do
+        _mon.synchronize do
           unless(@dirty)
             @dirty = Smash.new
           end
@@ -48,7 +45,7 @@ module Bogo
 
       # @return [Smash] current data state
       def attributes
-        synchronize { data.merge(dirty) }
+        _mon.synchronize { data.merge(dirty) }
       end
 
       # Create new instance
@@ -56,7 +53,7 @@ module Bogo
       # @param args [Hash]
       # @return [self]
       def load_data(args={})
-        synchronize do
+        _mon.synchronize do
           args = args.to_smash
           @data = Smash.new
           self.class.attributes.each do |name, options|
@@ -83,7 +80,7 @@ module Bogo
       #
       # @return [self]
       def valid_state
-        synchronize do
+        _mon.synchronize do
           data.merge!(dirty)
           dirty.clear
           @_checksum = Digest::SHA256.hexdigest(MultiJson.dump(data.inspect).to_s)
@@ -96,7 +93,7 @@ module Bogo
       # @param attr [String, Symbol] name of attribute
       # @return [TrueClass, FalseClass] model or attribute is dirty
       def dirty?(attr=nil)
-        synchronize do
+        _mon.synchronize do
           if(attr)
             dirty.has_key?(attr)
           else
@@ -122,7 +119,7 @@ module Bogo
 
       # @return [Hash]
       def to_h
-        synchronize do
+        _mon.synchronize do
           Hash[
             attributes.map{|k,v|
               [k, v.is_a?(Array) ?
