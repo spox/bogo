@@ -1,3 +1,7 @@
+# v0.2.16
+* [Lazy] Fix synchronization (#8)
+* [Memoization] Check for data before deleting 
+
 # v0.2.15
 * [Logger] Fix frozen string modification (#6)
 * [Stack] Add stack
