@@ -1,2 +1,2 @@
-require 'bogo'
-require 'minitest/autorun'
+require "bogo"
+require "rspec"

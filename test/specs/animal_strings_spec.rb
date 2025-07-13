@@ -8,28 +8,28 @@ describe Bogo::AnimalStrings do
 
   describe 'Snake casing' do
     it 'should snake camel cased string' do
-      _(@rawr.snake('ThisIsCamelCased')).must_equal 'this_is_camel_cased'
+      expect(@rawr.snake('ThisIsCamelCased')).to eq('this_is_camel_cased')
     end
 
     it 'should snake case weird camels' do
-      _(@rawr.snake('thisIsCamelCaseD')).must_equal 'this_is_camel_case_d'
-      _(@rawr.snake('THISIsCamelCased')).must_equal 'thisis_camel_cased'
+      expect(@rawr.snake('thisIsCamelCaseD')).to eq('this_is_camel_case_d')
+      expect(@rawr.snake('THISIsCamelCased')).to eq('thisis_camel_cased')
     end
   end
 
   describe 'Camel Casing' do
     it 'should camel snake cased string' do
-      _(@rawr.camel('this_is_camel_cased')).must_equal 'ThisIsCamelCased'
+      expect(@rawr.camel('this_is_camel_cased')).to eq('ThisIsCamelCased')
     end
 
     it 'should camel case weird snakes' do
-      _(@rawr.camel('_this_is_camel_cased')).must_equal 'ThisIsCamelCased'
-      _(@rawr.camel('_this_is_camel_cased_')).must_equal 'ThisIsCamelCased'
-      _(@rawr.camel('this__is_camel___cased')).must_equal 'ThisIsCamelCased'
+      expect(@rawr.camel('_this_is_camel_cased')).to eq('ThisIsCamelCased')
+      expect(@rawr.camel('_this_is_camel_cased_')).to eq('ThisIsCamelCased')
+      expect(@rawr.camel('this__is_camel___cased')).to eq('ThisIsCamelCased')
     end
 
     it 'should support leading lower case camel' do
-      _(@rawr.camel('this_is_camel_cased', false)).must_equal 'thisIsCamelCased'
+      expect(@rawr.camel('this_is_camel_cased', false)).to eq('thisIsCamelCased')
     end
   end
 end

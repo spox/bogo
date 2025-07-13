@@ -1,11 +1,10 @@
-require 'bundler/setup'
-require 'rake/testtask'
+require "bundler/setup"
+require "rspec/core/rake_task"
 
-Rake::TestTask.new do |test|
-  test.pattern = 'test/**/*_spec.rb'
-  test.verbose = true
+RSpec::Core::RakeTask.new(:spec) do |t|
+  t.pattern = "test/specs/**/*_spec.rb"
 end
 
 task :default => [] do
-  Rake::Task[:test].invoke
+  Rake::Task[:spec].invoke
 end
