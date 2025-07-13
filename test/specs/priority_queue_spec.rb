@@ -21,14 +21,14 @@ describe Bogo::PriorityQueue do
       q.push("we're", 3)
       result = []
       10.times{ result.push(q.pop) }
-      _(result.join(' ')).must_equal "that's what we're going to call it: i got worms"
+      expect(result.join(' ')).to eq("that's what we're going to call it: i got worms")
     end
 
     it 'should allow block based cost' do
       q.push('last'){ 20 }
       q.push('first', 1)
-      _(q.pop).must_equal 'first'
-      _(q.pop).must_equal 'last'
+      expect(q.pop).to eq('first')
+      expect(q.pop).to eq('last')
     end
 
     it 'should dynamically sort block costs' do
@@ -36,21 +36,21 @@ describe Bogo::PriorityQueue do
       q.push('block'){ val }
       q.push('param', 1)
       val = 0
-      _(q.pop).must_equal 'block'
-      _(q.pop).must_equal 'param'
+      expect(q.pop).to eq('block')
+      expect(q.pop).to eq('param')
     end
 
     it 'should provide accurate size' do
       q.push('a', 1)
       q.push('b', 2)
-      _(q.size).must_equal 2
+      expect(q.size).to eq(2)
     end
 
     it 'should determine if empty' do
       q.push('a', 1)
-      _(q.empty?).must_equal false
+      expect(q.empty?).to eq(false)
       q.pop
-      _(q.empty?).must_equal true
+      expect(q.empty?).to eq(true)
     end
 
     it 'should allow pushing muliple items at once' do
@@ -62,7 +62,7 @@ describe Bogo::PriorityQueue do
           ['e', 5]
         ])
       %w(a b c d e).each do |chr|
-        _(q.pop).must_equal chr
+        expect(q.pop).to eq(chr)
       end
     end
 
@@ -75,40 +75,38 @@ describe Bogo::PriorityQueue do
           ['e', 5]
         ])
       %w(a b c d e).each do |chr|
-        _(q.pop).must_equal chr
+        expect(q.pop).to eq(chr)
       end
     end
 
     it 'should error when pushing multiple items with no score' do
-      _(->{
-          q.multi_push([
-            ['a', 1],
-            ['b'],
-            ['d', 4],
-            ['c', lambda{3}],
-            ['e', 5]
-          ])
-        }
-       ).must_raise ArgumentError
+      expect {
+        q.multi_push([
+          ['a', 1],
+          ['b'],
+          ['d', 4],
+          ['c', lambda{3}],
+          ['e', 5]
+                     ])
+      }.to raise_error(ArgumentError)
     end
 
     it 'should error when pushing non numeric/proc as score' do
-      _(->{
-          q.multi_push([
-            ['a', 1],
-            ['b', 'x'],
-            ['d', 4],
-            ['c', lambda{3}],
-            ['e', 5]
-          ])
-        }
-       ).must_raise ArgumentError
+      expect {
+        q.multi_push([
+          ['a', 1],
+          ['b', 'x'],
+          ['d', 4],
+          ['c', lambda{3}],
+          ['e', 5]
+                     ])
+      }.to raise_error(ArgumentError)
     end
 
     it 'should allow checking if item is already pushed' do
       q.push(1, 1)
-      _(q.include?(1)).must_equal true
-      _(q.include?(2)).must_equal false
+      expect(q.include?(1)).to eq(true)
+      expect(q.include?(2)).to eq(false)
     end
 
     it 'should order queue by high score if provided :highscore on init' do
@@ -116,9 +114,9 @@ describe Bogo::PriorityQueue do
       high_q.push('a', 1)
       high_q.push('b', 5)
       high_q.push('c', 2)
-      _(high_q.pop).must_equal 'b'
-      _(high_q.pop).must_equal 'c'
-      _(high_q.pop).must_equal 'a'
+      expect(high_q.pop).to eq('b')
+      expect(high_q.pop).to eq('c')
+      expect(high_q.pop).to eq('a')
     end
   end
 end

@@ -2,23 +2,23 @@ require_relative '../spec'
 
 describe Bogo::Retry do
   it 'should error on failure' do
-    _(->{ Bogo::Retry.new{ raise 'error' } }).must_raise NotImplementedError
+    expect { Bogo::Retry.new{ raise 'error' } }.to raise_error(NotImplementedError)
   end
 
   it 'should not error when auto run is disabled' do
-    _(Bogo::Retry.new(:auto_run => false){ raise 'error' }).must_be_kind_of Bogo::Retry
+    expect(Bogo::Retry.new(:auto_run => false){ raise 'error' }).to be_kind_of(Bogo::Retry)
   end
 
   it 'should error after maximum attempts' do
-    _(->{ Bogo::Retry.new(:max_attempts => 1){ raise 'error' } }).must_raise RuntimeError
+    expect { Bogo::Retry.new(:max_attempts => 1){ raise 'error' } }.to raise_error(RuntimeError)
   end
 
   it 'should error if no block is provided' do
-    _(->{ Bogo::Retry.new }).must_raise ArgumentError
+    expect { Bogo::Retry.new }.to raise_error(ArgumentError)
   end
 
   it 'should build expected type of retry' do
-    _(Bogo::Retry.build(:flat){true}).must_be_kind_of Bogo::Retry::Flat
+    expect(Bogo::Retry.build(:flat){true}).to be_kind_of(Bogo::Retry::Flat)
   end
 
   describe Bogo::Retry::Flat do
@@ -30,9 +30,9 @@ describe Bogo::Retry do
     end
 
     it 'should always return the same wait interval' do
-      _(@retry.send(:wait_on_failure, nil)).must_equal 3
+      expect(@retry.send(:wait_on_failure, nil)).to eq(3)
       @retry.send(:log_attempt!)
-      _(@retry.send(:wait_on_failure, nil)).must_equal 3
+      expect(@retry.send(:wait_on_failure, nil)).to eq(3)
     end
 
   end
@@ -48,15 +48,15 @@ describe Bogo::Retry do
 
     it 'should return linear growth wait interval' do
       @retry.send(:log_attempt!)
-      _(@retry.send(:wait_on_failure, nil)).must_equal 3
+      expect(@retry.send(:wait_on_failure, nil)).to eq(3)
       @retry.send(:log_attempt!)
-      _(@retry.send(:wait_on_failure, nil)).must_equal 6
+      expect(@retry.send(:wait_on_failure, nil)).to eq(6)
       @retry.send(:log_attempt!)
-      _(@retry.send(:wait_on_failure, nil)).must_equal 9
+      expect(@retry.send(:wait_on_failure, nil)).to eq(9)
       @retry.send(:log_attempt!)
-      _(@retry.send(:wait_on_failure, nil)).must_equal 12
+      expect(@retry.send(:wait_on_failure, nil)).to eq(12)
       @retry.send(:log_attempt!)
-      _(@retry.send(:wait_on_failure, nil)).must_equal 15
+      expect(@retry.send(:wait_on_failure, nil)).to eq(15)
     end
 
   end
@@ -73,15 +73,15 @@ describe Bogo::Retry do
 
     it 'should return linear growth wait interval' do
       @retry.send(:log_attempt!)
-      _(@retry.send(:wait_on_failure, nil)).must_equal 3
+      expect(@retry.send(:wait_on_failure, nil)).to eq(3)
       @retry.send(:log_attempt!)
-      _(@retry.send(:wait_on_failure, nil)).must_equal 16
+      expect(@retry.send(:wait_on_failure, nil)).to eq(16)
       @retry.send(:log_attempt!)
-      _(@retry.send(:wait_on_failure, nil)).must_equal 25
+      expect(@retry.send(:wait_on_failure, nil)).to eq(25)
       @retry.send(:log_attempt!)
-      _(@retry.send(:wait_on_failure, nil)).must_equal 36
+      expect(@retry.send(:wait_on_failure, nil)).to eq(36)
       @retry.send(:log_attempt!)
-      _(@retry.send(:wait_on_failure, nil)).must_equal 49
+      expect(@retry.send(:wait_on_failure, nil)).to eq(49)
     end
   end
 end

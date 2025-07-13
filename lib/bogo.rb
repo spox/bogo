@@ -11,6 +11,7 @@ module Bogo
   autoload :Retry, "bogo/retry"
   autoload :Smash, "bogo/smash"
   autoload :Stack, "bogo/stack"
+  autoload :Stepper, "bogo/stepper"
   autoload :Utility, "bogo/utility"
 end
 

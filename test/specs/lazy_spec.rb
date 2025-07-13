@@ -37,126 +37,126 @@ describe Bogo::Lazy do
     it 'should convert to a hash' do
       instance.stringer = 'a value'
       val = instance.to_h
-      _(val['stringer']).must_equal 'a value'
+      expect(val['stringer']).to eq('a value')
     end
 
     it 'should provide accessor and setter methods' do
       %w(stringer multi_type stringer_default integer_coerced).each do |name|
-        _(instance.respond_to?(name)).must_equal true
-        _(instance.respond_to?("#{name}=")).must_equal true
+        expect(instance.respond_to?(name)).to eq(true)
+        expect(instance.respond_to?("#{name}=")).to eq(true)
       end
     end
 
     it 'cannot not modify original value' do
       instance.stringer = 'a value'
       instance.valid_state
-      _(instance.stringer).must_equal('a value')
-      _(->{ instance.stringer.replace('new value') }).must_raise(FrozenError)
+      expect(instance.stringer).to eq('a value')
+      expect{ instance.stringer.replace('new value') }.to raise_error(FrozenError)
     end
 
     it 'can modify modified value' do
       instance.stringer = 'a value'
       instance.valid_state
       instance.stringer = 'new value'
-      _(instance.stringer.replace('replace value')).must_equal 'replace value'
+      expect(instance.stringer.replace('replace value')).to eq('replace value')
     end
 
     it 'should only allow string value to be set' do
       instance.stringer = 'a string'
-      _(instance.stringer).must_equal 'a string'
-      _(->{ instance.stringer = 1 }).must_raise(TypeError)
+      expect(instance.stringer).to eq('a string')
+      expect { instance.stringer = 1 }.to raise_error(TypeError)
     end
 
     it 'should allow string or integer to be set' do
       instance.multi_type = 'a string'
-      _(instance.multi_type).must_equal 'a string'
+      expect(instance.multi_type).to eq('a string')
       instance.multi_type = 1
-      _(instance.multi_type).must_equal 1
-      _(->{ instance.multi_type = :symbol }).must_raise(TypeError)
+      expect(instance.multi_type).to eq(1)
+      expect { instance.multi_type = :symbol }.to raise_error(TypeError)
     end
 
     it 'should provide default value' do
-      _(instance.stringer_default).must_equal 'ohai'
+      expect(instance.stringer_default).to eq('ohai')
     end
 
     it 'should coerce value to expected type' do
       instance.integer_coerced = '100'
-      _(instance.integer_coerced).must_equal 100
+      expect(instance.integer_coerced).to eq(100)
     end
 
     it 'should mark set values as dirty' do
       instance.stringer = 'a string'
-      _(instance.dirty?(:stringer)).must_equal true
-      _(instance.dirty[:stringer]).must_equal 'a string'
-      _(instance.data[:string]).wont_equal 'a string'
+      expect(instance.dirty?(:stringer)).to eq(true)
+      expect(instance.dirty[:stringer]).to eq('a string')
+      expect(instance.data[:string]).not_to eq('a string')
     end
 
     it 'should set defaults as non-dirty' do
-      _(instance.dirty?(:stringer_default)).must_equal false
-      _(instance.data[:stringer_default]).must_equal 'ohai'
+      expect(instance.dirty?(:stringer_default)).to eq(false)
+      expect(instance.data[:stringer_default]).to eq('ohai')
     end
 
     it 'should merge #data and #dirty to provide #attributes' do
       instance.stringer = 'obai'
-      _(instance.attributes[:stringer]).must_equal 'obai'
-      _(instance.attributes[:stringer_default]).must_equal 'ohai'
+      expect(instance.attributes[:stringer]).to eq('obai')
+      expect(instance.attributes[:stringer_default]).to eq('ohai')
     end
 
     it 'should return dirty values when set' do
       instance.stringer_default = 'obai'
-      _(instance.stringer_default).must_equal 'obai'
-      _(instance.dirty[:stringer_default]).must_equal 'obai'
-      _(instance.data[:stringer_default]).must_equal 'ohai'
-      _(instance.attributes[:stringer_default]).must_equal 'obai'
+      expect(instance.stringer_default).to eq('obai')
+      expect(instance.dirty[:stringer_default]).to eq('obai')
+      expect(instance.data[:stringer_default]).to eq('ohai')
+      expect(instance.attributes[:stringer_default]).to eq('obai')
     end
 
     it 'should call dependent method prior to value return' do
-      _(instance.dependent_value).must_equal 'obai'
+      expect(instance.dependent_value).to eq('obai')
     end
 
     it 'should call missing method prior to value return' do
-      _(instance.missing_value).must_equal 'fubar'
+      expect(instance.missing_value).to eq('fubar')
     end
 
     it 'should return if value is set' do
-      _(instance.stringer_default?).must_equal true
-      _(instance.stringer?).must_equal false
-      _(instance.dependent_value?).must_equal true
+      expect(instance.stringer_default?).to eq(true)
+      expect(instance.stringer?).to eq(false)
+      expect(instance.dependent_value?).to eq(true)
     end
 
     it 'should merge #dirty into #data on #valid_state' do
       instance.stringer = 'a string'
-      _(instance.dirty?(:stringer)).must_equal true
-      _(instance.dirty[:stringer]).must_equal 'a string'
-      _(instance.data[:stringer]).wont_equal 'a string'
+      expect(instance.dirty?(:stringer)).to eq(true)
+      expect(instance.dirty[:stringer]).to eq('a string')
+      expect(instance.data[:stringer]).not_to eq('a string')
       instance.valid_state
-      _(instance.dirty?(:stringer)).must_equal false
-      _(instance.dirty[:stringer]).wont_equal 'a string'
-      _(instance.data[:stringer]).must_equal 'a string'
+      expect(instance.dirty?(:stringer)).to eq(false)
+      expect(instance.dirty[:stringer]).not_to eq('a string')
+      expect(instance.data[:stringer]).to eq('a string')
     end
 
     it 'should allow single values being set into multiple' do
       instance.stringer_multiple = 'a string'
-      _(instance.stringer_multiple).must_equal ['a string']
+      expect(instance.stringer_multiple).to eq(['a string'])
     end
 
     it 'should allow multiple values being set into multiple' do
       instance.stringer_multiple = ['a string', 'an string']
-      _(instance.stringer_multiple).must_equal ['a string', 'an string']
+      expect(instance.stringer_multiple).to eq(['a string', 'an string'])
     end
 
     it 'should error when single value set into multple is incorrect type' do
-      _(->{ instance.stringer_multiple = 2 }).must_raise TypeError
+      expect { instance.stringer_multiple = 2 }.to raise_error(TypeError)
     end
 
     it 'should coerce multiple values to correct types' do
       instance.stringer_multiple_coerce = [1, 2, '3']
-      _(instance.stringer_multiple_coerce).must_equal ['1', '2', '3']
+      expect(instance.stringer_multiple_coerce).to eq(['1', '2', '3'])
     end
 
     it 'should coerce multiple values to correct types and allow coerce block to return multiples' do
       instance.stringer_multiple_coerce_multiple = [1, 2, '3', '4,5,6']
-      _(instance.stringer_multiple_coerce_multiple).must_equal [1, 2, 3, 4, 5, 6]
+      expect(instance.stringer_multiple_coerce_multiple).to eq([1, 2, 3, 4, 5, 6])
     end
   end
 
@@ -176,24 +176,23 @@ describe Bogo::Lazy do
 
     it 'should never be dirty' do
       instance.stringer = 'value'
-      _(instance.stringer).must_equal 'value'
-      _(instance.dirty[:stringer]).must_equal 'value'
-      _(instance.data[:stringer]).must_equal 'value'
-      _(instance.attributes[:stringer]).must_equal 'value'
-      _(instance.dirty?(:stringer)).must_equal false
+      expect(instance.stringer).to eq('value')
+      expect(instance.dirty[:stringer]).to eq('value')
+      expect(instance.data[:stringer]).to eq('value')
+      expect(instance.attributes[:stringer]).to eq('value')
+      expect(instance.dirty?(:stringer)).to eq(false)
     end
 
     it 'should reference same data structures' do
-      _(instance.data).must_equal instance.dirty
-      _(instance.dirty).must_equal instance.attributes
-      _(
+      expect(instance.data).to eq(instance.dirty)
+      expect(instance.dirty).to eq(instance.attributes)
+      expect(
         [
           instance.data,
           instance.dirty,
           instance.attributes
         ].map(&:object_id).uniq
-       ).must_equal [instance.data.object_id]
+       ).to eq([instance.data.object_id])
     end
-
   end
 end
