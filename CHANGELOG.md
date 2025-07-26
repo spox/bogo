@@ -1,4 +1,6 @@
 # UNRELEASED
+* [Stack] Refactor and support recovery
+* [Stepper] Add stepper implementation
 
 # v0.2.16
 * [Lazy] Fix synchronization (#8)
